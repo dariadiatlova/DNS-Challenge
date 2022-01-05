@@ -9,7 +9,6 @@ import os
 import sys
 import glob
 import argparse
-import ast
 import configparser as CP
 from random import shuffle
 import random
@@ -174,7 +173,8 @@ def main_gen(params):
         # add reverb with selected RIR
         rir_index = random.randint(0,len(params['myrir'])-1)
         
-        my_rir = os.path.normpath(os.path.join('datasets', 'impulse_responses', params['myrir'][rir_index]))
+        # my_rir = os.path.normpath(os.path.join('datasets', 'impulse_responses', params['myrir'][rir_index]))
+        my_rir = os.path.normpath(params['myrir'][rir_index])
         (fs_rir,samples_rir) = wavfile.read(my_rir)
 
         my_channel = int(params['mychannel'][rir_index])
