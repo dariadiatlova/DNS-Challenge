@@ -22,7 +22,7 @@ for name in ${VAL_ARRAY[@]}; do
   cp "${source_directory}/clean/clean_fileid_${i}" "$source_directory/clean_val"
 done
 
-for name in ${TRAIN_ARRAY[@]}; do
+for name in ${TEST_ARRAY[@]}; do
   i=${name##*_}
   cp "${source_directory}/clean/clean_fileid_${i}" "$source_directory/clean_test"
 done
