@@ -33,10 +33,11 @@ mkdir $val_directory
 mkdir $test_directory
 
 for i in ${LIST[@]}; do
+  n=${name##*_}
   path="${source_directory}/${i}"
-  if (($COUNTER < $TRAIN_RATE)); then mv $path $train_directory;
-  elif (($COUNTER < $VAL_RATE)); then mv $path $val_directory;
-  else mv $path $test_directory
+  if (($COUNTER < $TRAIN_RATE)); then cp $path "$train_directory/noisy_$n";
+  elif (($COUNTER < $VAL_RATE)); then cp $path "$val_directory/noisy_$n";
+  else cp $path "$test_directory/noisy_$n"
   fi
   ((COUNTER++))
 done
