@@ -5,8 +5,11 @@ VAL_DIR="$source_directory/noisy_val"
 TEST_DIR="$source_directory/noisy_test"
 
 declare -a TRAIN_ARRAY=($(ls $TRAIN_DIR))
+read -d'\n' TRAIN_ARRAY < <(printf '%s\n' "${TRAIN_ARRAY[@]}"|tac)
 declare -a VAL_ARRAY=($(ls $VAL_DIR))
+read -d'\n' VAL_ARRAY < <(printf '%s\n' "${VAL_ARRAY[@]}"|tac)
 declare -a TEST_ARRAY=($(ls $TEST_DIR))
+read -d'\n' TEST_ARRAY < <(printf '%s\n' "${TEST_ARRAY[@]}"|tac)
 
 mkdir "$source_directory/clean_train"
 mkdir "$source_directory/clean_val"
