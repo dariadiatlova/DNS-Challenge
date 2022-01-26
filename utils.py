@@ -41,6 +41,3 @@ def rename_copyfile(src_path, dest_dir, prefix='', ext='*.wav'):
     for i in range(len(srcfiles)):
         dest_path = os.path.join(dest_dir, prefix+'_'+os.path.basename(srcfiles[i]))
         copyfile(srcfiles[i], dest_path)
-
-
-
