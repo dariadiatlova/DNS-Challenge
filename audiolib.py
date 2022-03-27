@@ -159,14 +159,14 @@ def segmental_snr_mixer(params, clean, noise, snr, target_level=-25, clipping_th
     if len(clean) > len(noise):
         noise = np.append(noise, np.zeros(len(clean)-len(noise)))
     else:
-        clean = np.append(clean, np.zeros(len(noise)-len(clean)))
-    clean = clean/(max(abs(clean))+EPS)
-    noise = noise/(max(abs(noise))+EPS)
+        noise = noise[:len(clean)]
+    clean = clean / (max(abs(clean)) + EPS)
+    noise = noise / (max(abs(noise)) + EPS)
     rmsclean, rmsnoise = active_rms(clean=clean, noise=noise)
     clean = normalize_segmental_rms(clean, rms=rmsclean, target_level=target_level)
     noise = normalize_segmental_rms(noise, rms=rmsnoise, target_level=target_level)
     # Set the noise level for a given SNR
-    noisescalar = rmsclean / (10**(snr/20)) / (rmsnoise+EPS)
+    noisescalar = rmsclean / (10**(snr/20)) / (rmsnoise + EPS)
     noisenewlevel = noise * noisescalar
 
     # Mix noise and clean speech
@@ -175,17 +175,17 @@ def segmental_snr_mixer(params, clean, noise, snr, target_level=-25, clipping_th
     # There is a chance of clipping that might happen with very less probability, which is not a major issue. 
     noisy_rms_level = np.random.randint(params['target_level_lower'], params['target_level_upper'])
     rmsnoisy = (noisyspeech**2).mean()**0.5
-    scalarnoisy = 10 ** (noisy_rms_level / 20) / (rmsnoisy+EPS)
+    scalarnoisy = 10 ** (noisy_rms_level / 20) / (rmsnoisy + EPS)
     noisyspeech = noisyspeech * scalarnoisy
     clean = clean * scalarnoisy
     noisenewlevel = noisenewlevel * scalarnoisy
     # Final check to see if there are any amplitudes exceeding +/- 1. If so, normalize all the signals accordingly
     if is_clipped(noisyspeech):
-        noisyspeech_maxamplevel = max(abs(noisyspeech))/(clipping_threshold-EPS)
-        noisyspeech = noisyspeech/noisyspeech_maxamplevel
-        clean = clean/noisyspeech_maxamplevel
-        noisenewlevel = noisenewlevel/noisyspeech_maxamplevel
-        noisy_rms_level = int(20*np.log10(scalarnoisy/noisyspeech_maxamplevel*(rmsnoisy+EPS)))
+        noisyspeech_maxamplevel = max(abs(noisyspeech)) / (clipping_threshold - EPS)
+        noisyspeech = noisyspeech / noisyspeech_maxamplevel
+        clean = clean / noisyspeech_maxamplevel
+        noisenewlevel = noisenewlevel / noisyspeech_maxamplevel
+        noisy_rms_level = int(20 * np.log10(scalarnoisy / noisyspeech_maxamplevel * (rmsnoisy + EPS)))
 
     return clean, noisenewlevel, noisyspeech, noisy_rms_level
     
