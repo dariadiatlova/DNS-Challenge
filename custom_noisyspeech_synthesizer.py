@@ -57,9 +57,14 @@ def _gen_new_txt(txt_filenames: List[str], directory_path: str):
     """
     new_txt = []
     for filename in txt_filenames:
-        with open(directory_path + "/" + filename) as f:
-            txt = f.readlines()
-            new_txt.extend(txt)
+        try:
+            with open(directory_path + "/" + filename) as f:
+                txt = f.readlines()
+                new_txt.extend(txt)
+        # pass if audio file does not have corresponded does not exist
+        except Exception:
+            print(f"File {directory_path}/{filename} does not exist.")
+            pass
     return " ".join(new_txt)
 
 
@@ -202,7 +207,6 @@ def main_gen(params: Dict):
         # add reverberation to clean generated audio and writes in to file
         samples_rir_ch = _get_reverb(params)
         clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
-        audiowrite(params["clean_destination"] + f"/a{j}.wav", clean_audio)
         # generate noisy audio
         # if specified, use specified SNR value
         if not params['randomize_snr']:
@@ -217,7 +221,8 @@ def main_gen(params: Dict):
         clean_audio, noise_audio, noisy_audio, target_level = segmental_snr_mixer(
             params=params, clean=clean_audio, noise=noise_audio, snr=snr)
         audiowrite(params["noise_destination"] + f"/n_{folder_name}_{j}.wav", noise_audio)
-        audiowrite(params["noisy_destination"] + f"/n_{folder_name}_snr_{target_level}_{j}.wav", noisy_audio)
+        audiowrite(params["clean_destination"] + f"/{j}_{folder_name}_snr_{snr}.wav", clean_audio)
+        audiowrite(params["noisy_destination"] + f"/{j}_{folder_name}_snr_{snr}.wav", noisy_audio)
     return
 
 
@@ -359,10 +364,12 @@ def main_body():
     cleanfilenames = [str(path.resolve()) for path in Path(clean_dir).rglob('*.wav')]
     params['cleanfilenames'] = cleanfilenames
     params['num_cleanfiles'] = len(params['cleanfilenames'])
-    transcripts = [str(path.resolve()) for path in Path(params["transcripts_dir"]).rglob('*.txt')]
-    assert len(transcripts) == params['num_cleanfiles'], f"Number of clean files to synthesize noisy speech:" \
-                                                         f"{params['num_cleanfiles']}" \
-                                                         f"does not match number of transcripts: {len(transcripts)}."
+
+    # transcripts = [str(path.resolve()) for path in Path(params["transcripts_dir"]).rglob('*.txt')]
+    # assert len(transcripts) == params['num_cleanfiles'], f"Number of clean files to synthesize noisy speech:" \
+    #                                                      f"{params['num_cleanfiles']}" \
+    #                                                      f"does not match number of transcripts: {len(transcripts)}."
+
     # list all noise types in a directory
     noise_dir = cfg["noise_dir"]
     noise_folders = os.listdir(noise_dir)

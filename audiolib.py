@@ -187,6 +187,10 @@ def segmental_snr_mixer(params, clean, noise, snr, target_level=-25, clipping_th
         noisenewlevel = noisenewlevel / noisyspeech_maxamplevel
         noisy_rms_level = int(20 * np.log10(scalarnoisy / noisyspeech_maxamplevel * (rmsnoisy + EPS)))
 
+    silence_const = 16000 // 2
+    silence = np.zeros(silence_const)
+    noisyspeech[:silence_const] = silence
+    noisyspeech[-silence_const:] = silence
     return clean, noisenewlevel, noisyspeech, noisy_rms_level
     
 
