@@ -229,15 +229,15 @@ def main_gen(params: Dict):
 def main_body():
     parser = argparse.ArgumentParser()
 
-    # configurations: read custom_noisyspeech_synthesizer.cfg and gather inputs
-    parser.add_argument('--cfg', default='custom_noisyspeech_synthesizer.cfg',
-                        help='Read custom_noisyspeech_synthesizer.cfg for all the details')
+    # configurations: read youtube_noisyspeech_synthesizer.cfg and gather inputs
+    parser.add_argument('--cfg', default='youtube_noisyspeech_synthesizer.cfg',
+                        help='Read youtube_noisyspeech_synthesizer.cfg for all the details')
     parser.add_argument('--cfg_str', type=str, default='noisy_speech')
     args = parser.parse_args()
 
     params = dict()
     params['args'] = args
-    cfgpath = os.path.join(os.path.dirname(__file__), args.cfg)
+    cfgpath = Path(__file__).parent.parent / f"configs/{args.cfg}"
     assert os.path.exists(cfgpath), f'No configuration file as [{cfgpath}]'
 
     cfg = CP.ConfigParser()
@@ -254,7 +254,8 @@ def main_body():
     params["noisy_destination"] = cfg["noisy_destination"]
 
     # audio params
-    params['fs'] = int(cfg['sampling_rate'])
+    params['target_fs'] = int(cfg['target_sr'])
+    params['real_fs'] = int(cfg['sampling_rate'])
     params['audioformat'] = cfg['audioformat']
     params['audio_length'] = float(cfg['audio_length'])
     params['silence_length'] = float(cfg['silence_length'])
