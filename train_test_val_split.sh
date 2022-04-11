@@ -14,9 +14,15 @@ val_rate=10
 test_rate=20
 
 source_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy"
+<<<<<<< HEAD
 train_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/train"
 val_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/val"
 test_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/test"
+=======
+train_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy_train"
+val_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy_val"
+test_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy_test"
+>>>>>>> 75be29d3987da1299aa08265c3cf45971dabc19c
 
 N=$(ls $source_directory | wc -l)
 
