@@ -24,6 +24,23 @@ np.random.seed(5)
 random.seed(5)
 
 
+def get_file_names(tsv_filepath: str, root_path: str):
+    """
+    Function takes the path the tsv file and returns the column with filenames, changed from .mp3 to .wav.
+    :param tsv_filepath: str
+    :param root_path: str path to the root directory with the extracted filenames
+    :return: ndarray
+    """
+    df = pd.read_csv(tsv_filepath, sep='\t')
+    mp3_filenames = np.array(df.path)
+    pattern = re.compile(".*(?=.mp3)")
+    wav_filenames = []
+    for filename in mp3_filenames:
+        if pattern.search(filename) is not None:
+            wav_filenames.append(root_path + pattern.search(filename).group() + ".wav")
+    return np.array(wav_filenames)
+
+
 def _audio_activity_check(filename) -> Optional[bool]:
     """
     Function take path to th audio file, loads it and return True if file is not empty and readable and None otherwise.
@@ -169,7 +186,7 @@ def main_gen(params: Dict):
     files_to_generate = params['num_files']
     file_indices = list(range(params["num_cleanfiles"]))
     df = pd.read_csv(params["csv_path"], sep="\t").set_index("path")
-    print(df.index)
+
     for j in trange(files_to_generate):
         # each time use 6 audio files to generate audio as 1 audio ~ 1 sec len
         indices_to_use = random.choices(file_indices, k=6)
@@ -309,7 +326,8 @@ def main_body():
     params['new_transcripts_dir'] = cfg['transcripts_destination']
 
     clean_dir = cfg['speech_dir']
-    cleanfilenames = [str(path.resolve()) for path in Path(clean_dir).rglob('*.wav')]
+    # cleanfilenames = [str(path.resolve()) for path in Path(clean_dir).rglob('*.wav')]
+    cleanfilenames = get_file_names(cfg["csv_path"], cfg["root_path"])
     params['cleanfilenames'] = cleanfilenames
     params['num_cleanfiles'] = len(params['cleanfilenames'])
 
