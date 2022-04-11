@@ -145,8 +145,8 @@ BLOB_NAMES=(
 #    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.read_speech_038_NA_NA.tar.bz2
 #    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.read_speech_039_NA_NA.tar.bz2
 
-    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.russian_speech_000_0.00_4.31.tar.bz2
-    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.russian_speech_001_4.31_NA.tar.bz2
+#    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.russian_speech_000_0.00_4.31.tar.bz2
+#    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.russian_speech_001_4.31_NA.tar.bz2
 
 #    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.spanish_speech_000_0.00_4.09.tar.bz2
 #    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.spanish_speech_001_4.09_NA.tar.bz2
@@ -164,20 +164,20 @@ BLOB_NAMES=(
 #    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.vctk_wav48_silence_trimmed_003.tar.bz2
 #    datasets_fullband/clean_fullband/datasets_fullband.clean_fullband.vctk_wav48_silence_trimmed_004.tar.bz2
 
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_000.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_001.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_002.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_003.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_004.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_005.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_006.tar.bz2
-
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.freesound_000.tar.bz2
-    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.freesound_001.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_000.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_001.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_002.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_003.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_004.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_005.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.audioset_006.tar.bz2
+#
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.freesound_000.tar.bz2
+#    datasets_fullband/noise_fullband/datasets_fullband.noise_fullband.freesound_001.tar.bz2
 
 #    datasets_fullband/datasets_fullband.dev_testset_000.tar.bz2
 
-    datasets/datasets.impulse_responses.tar.bz2
+    datasets_fullband/datasets_fullband.impulse_responses_000.tar.bz2
 )
 
 ###############################################################
@@ -201,8 +201,8 @@ do
     # curl "$URL" -o "$OUTPUT_PATH/$BLOB"
 
     # Same as above, but using wget
-    # wget "$URL" -O "$OUTPUT_PATH/$BLOB"
+     wget "$URL" -O "$OUTPUT_PATH/$BLOB"
 
     # Same, + unpack files on the fly
-     curl "$URL" | tar -C "$OUTPUT_PATH" -f - -x -j
+#     curl "$URL" | tar -C "$OUTPUT_PATH" -f - -x -j
 done
