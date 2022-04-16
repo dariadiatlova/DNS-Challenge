@@ -255,7 +255,6 @@ def main_body():
     params['total_hours'] = float(cfg['total_hours'])
 
     # rir
-    params['rir_choice'] = int(cfg['rir_choice'])
     params['lower_t60'] = float(cfg['lower_t60'])
     params['upper_t60'] = float(cfg['upper_t60'])
     params['rir_table_csv'] = str(cfg['rir_table_csv'])
