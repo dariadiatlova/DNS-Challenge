@@ -245,7 +245,6 @@ def main_body():
     params["transcripts_dir"] = cfg["transcripts_dir"]
     params["transcripts_destination"] = cfg["transcripts_destination"]
     params["clean_destination"] = cfg["clean_destination"]
-    params["noise_destination"] = cfg["noise_destination"]
     params["noisy_destination"] = cfg["noisy_destination"]
 
     # audio params
