@@ -144,7 +144,7 @@ def gen_new_audio(filenames: List[str], params: Dict, df : pd.DataFrame):
         # add new audio-file till the target length will be reached
         if remaining_audio_length > 0:
             input_audio, fs_input = audioread(audiopath)
-            print(fs_input, fs_output)
+
             if fs_input != fs_output:
                 input_audio = librosa.resample(input_audio, fs_input, fs_output)
 
@@ -206,7 +206,7 @@ def main_gen(params: Dict):
 
         # add reverberation to clean generated audio and writes in to file
         samples_rir_ch = _get_reverb(params)
-        clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
+        # clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
 
         audiowrite(params["clean_destination"] + f"/{j}_clean.wav", clean_audio)
         audiowrite(params["fake_noisy_destination"] + f"/{j}_fake_noisy.wav", clean_audio)
