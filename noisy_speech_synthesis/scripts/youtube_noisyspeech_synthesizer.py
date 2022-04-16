@@ -254,8 +254,7 @@ def main_body():
     params["noisy_destination"] = cfg["noisy_destination"]
 
     # audio params
-    params['target_fs'] = int(cfg['target_sr'])
-    params['real_fs'] = int(cfg['sampling_rate'])
+    params['fs'] = int(cfg['sampling_rate'])
     params['audioformat'] = cfg['audioformat']
     params['audio_length'] = float(cfg['audio_length'])
     params['silence_length'] = float(cfg['silence_length'])
