@@ -1,6 +1,5 @@
 import argparse
 import configparser as CP
-import glob
 import os
 import random
 import re
@@ -10,12 +9,12 @@ from typing import Dict, Optional, List
 import librosa
 import numpy as np
 import pandas as pd
+from audiolib import audioread, audiowrite, normalize
 from scipy import signal
 from scipy.io import wavfile
 from tqdm import trange
 
 import utils
-from audiolib import audioread, audiowrite, segmental_snr_mixer
 
 MAXTRIES = 50
 MAXFILELEN = 100
@@ -189,7 +188,7 @@ def main_gen(params: Dict):
 
     for j in trange(files_to_generate):
         # each time use 6 audio files to generate audio as 1 audio ~ 1 sec len
-        indices_to_use = random.choices(file_indices, k=6)
+        indices_to_use = np.random.choice(file_indices, size=6, replace=True)
 
         # check that all sampled files are not empty
         for i, idx in enumerate(indices_to_use):
@@ -197,7 +196,7 @@ def main_gen(params: Dict):
                 pass
             else:
                 while True:
-                    idx = random.choice(file_indices)
+                    idx = np.random.choice(file_indices, size=1, replace=True)
                     if _audio_activity_check(clean_file_names[idx]):
                         indices_to_use[i] = idx
                         break
@@ -207,22 +206,18 @@ def main_gen(params: Dict):
         # add reverberation to clean generated audio and writes in to file
         samples_rir_ch = _get_reverb(params)
         clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
-        # generate noisy audio
-        # if specified, use specified SNR value
-        if not params['randomize_snr']:
-            snr = params['snr']
-        # use a randomly sampled SNR value between the specified bounds
-        else:
-            snr = np.random.randint(params['snr_lower'], params['snr_upper'])
-        noise_audio, folder_name = get_noise_audiofile(params)
-        if folder_name == "TCAR":
-            # amplitude for this type of noise is much lower, so we make snr lower
-            snr -= 20
-        clean_audio, noise_audio, noisy_audio, target_level = segmental_snr_mixer(
-            params=params, clean=clean_audio, noise=noise_audio, snr=snr)
-        audiowrite(params["noise_destination"] + f"/n_{folder_name}_{j}.wav", noise_audio)
-        audiowrite(params["clean_destination"] + f"/{j}_{folder_name}_snr_{snr}.wav", clean_audio)
-        audiowrite(params["noisy_destination"] + f"/{j}_{folder_name}_snr_{snr}.wav", noisy_audio)
+
+        # normalize amplitudes
+        clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
+        clean_audio = normalize(clean_audio)
+        noisy_rms_level = np.random.randint(params['target_level_lower'], params['target_level_upper'])
+        rmsnoisy = (clean_audio ** 2).mean() ** 0.5
+        scalarnoisy = 10 ** (noisy_rms_level / 20) / (rmsnoisy + np.finfo(float).eps)
+        clean_audio = clean_audio * scalarnoisy
+        clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
+
+        audiowrite(params["clean_destination"] + f"/{j}_clean.wav", clean_audio)
+        audiowrite(params["noisy_destination"] + f"/{j}_fake_noisy.wav", clean_audio)
     return
 
 
@@ -286,53 +281,16 @@ def main_body():
     lower_t60 = params['lower_t60']
     upper_t60 = params['upper_t60']
 
-    if params['rir_choice'] == 1:  # real 3076 IRs
-        real_indices = [i for i, x in enumerate(rir_isreal2) if x == "1"]
+    real_indices = [i for i, x in enumerate(rir_isreal2) if x == "1"]
 
-        chosen_i = []
-        for i in real_indices:
-            if (float(rir_t60_2[i]) >= lower_t60) and (float(rir_t60_2[i]) <= upper_t60):
-                chosen_i.append(i)
+    chosen_i = []
+    for i in real_indices:
+        if (float(rir_t60_2[i]) >= lower_t60) and (float(rir_t60_2[i]) <= upper_t60):
+            chosen_i.append(i)
 
-        myrir = [rir_wav2[i] for i in chosen_i]
-        mychannel = [rir_channel2[i] for i in chosen_i]
-        myt60 = [rir_t60_2[i] for i in chosen_i]
-
-    elif params['rir_choice'] == 2:  # synthetic 112337 IRs
-        synthetic_indices = [i for i, x in enumerate(rir_isreal2) if x == "0"]
-
-        chosen_i = []
-        for i in synthetic_indices:
-            if (float(rir_t60_2[i]) >= lower_t60) and (float(rir_t60_2[i]) <= upper_t60):
-                chosen_i.append(i)
-
-        myrir = [rir_wav2[i] for i in chosen_i]
-        mychannel = [rir_channel2[i] for i in chosen_i]
-        myt60 = [rir_t60_2[i] for i in chosen_i]
-
-    elif params['rir_choice'] == 3:  # both real and synthetic
-        all_indices = [i for i, x in enumerate(rir_isreal2)]
-
-        chosen_i = []
-        for i in all_indices:
-            if (float(rir_t60_2[i]) >= lower_t60) and (float(rir_t60_2[i]) <= upper_t60):
-                chosen_i.append(i)
-
-        myrir = [rir_wav2[i] for i in chosen_i]
-        mychannel = [rir_channel2[i] for i in chosen_i]
-        myt60 = [rir_t60_2[i] for i in chosen_i]
-
-    else:  # default both real and synthetic
-        all_indices = [i for i, x in enumerate(rir_isreal2)]
-
-        chosen_i = []
-        for i in all_indices:
-            if (float(rir_t60_2[i]) >= lower_t60) and (float(rir_t60_2[i]) <= upper_t60):
-                chosen_i.append(i)
-
-        myrir = [rir_wav2[i] for i in chosen_i]
-        mychannel = [rir_channel2[i] for i in chosen_i]
-        myt60 = [rir_t60_2[i] for i in chosen_i]
+    myrir = [rir_wav2[i] for i in chosen_i]
+    mychannel = [rir_channel2[i] for i in chosen_i]
+    myt60 = [rir_t60_2[i] for i in chosen_i]
 
     params['myrir'] = myrir
     params['mychannel'] = mychannel
@@ -343,18 +301,8 @@ def main_body():
     print(f"Number of files to be synthesized: {params['num_files']}")
 
     # snr
-    params['clean_activity_threshold'] = float(cfg['clean_activity_threshold'])
-    params['noise_activity_threshold'] = float(cfg['noise_activity_threshold'])
-    params['snr_lower'] = int(cfg['snr_lower'])
-    params['snr_upper'] = int(cfg['snr_upper'])
-    params['randomize_snr'] = utils.str2bool(cfg['randomize_snr'])
     params['target_level_lower'] = int(cfg['target_level_lower'])
     params['target_level_upper'] = int(cfg['target_level_upper'])
-
-    if 'snr' in cfg.keys():
-        params['snr'] = int(cfg['snr'])
-    else:
-        params['snr'] = int((params['snr_lower'] + params['snr_upper']) / 2)
 
     params['noisyspeech_dir'] = utils.get_dir(cfg, 'noisy_destination', 'noised_wav')
     params['clean_proc_dir'] = utils.get_dir(cfg, 'clean_destination', 'clean_wav')
@@ -363,27 +311,9 @@ def main_body():
 
     clean_dir = cfg['speech_dir']
     cleanfilenames = [str(path.resolve()) for path in Path(clean_dir).rglob('*.wav')]
+    np.random.shuffle(cleanfilenames)
     params['cleanfilenames'] = cleanfilenames
     params['num_cleanfiles'] = len(params['cleanfilenames'])
-
-    # transcripts = [str(path.resolve()) for path in Path(params["transcripts_dir"]).rglob('*.txt')]
-    # assert len(transcripts) == params['num_cleanfiles'], f"Number of clean files to synthesize noisy speech:" \
-    #                                                      f"{params['num_cleanfiles']}" \
-    #                                                      f"does not match number of transcripts: {len(transcripts)}."
-
-    # list all noise types in a directory
-    noise_dir = cfg["noise_dir"]
-    noise_folders = os.listdir(noise_dir)
-
-    # remove extra folder
-    if ".DS_Store" in noise_folders:
-        noise_folders.remove(".DS_Store")
-
-    # list[list] with absolute paths to the noise wav's in each noise folder
-    noisefilenames = [glob.glob(os.path.join(noise_dir + f"/{i}", params['audioformat'])) for i in noise_folders]
-    # dictionary with noise_type: list of absolute paths to noise wav's of its type
-    noise_filenames_dict = dict(zip(noise_folders, noisefilenames))
-    params['noise_filenames_dict'] = noise_filenames_dict
 
     # call main_gen() to generate audio
     main_gen(params)

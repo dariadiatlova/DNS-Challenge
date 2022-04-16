@@ -13,7 +13,7 @@ from scipy import signal
 from scipy.io import wavfile
 from tqdm import trange
 
-from audiolib import audioread, audiowrite, segmental_snr_mixer, normalize
+from audiolib import audioread, audiowrite, normalize
 
 MAXTRIES = 50
 MAXFILELEN = 100
