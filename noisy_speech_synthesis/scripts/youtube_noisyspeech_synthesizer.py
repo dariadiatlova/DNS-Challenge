@@ -229,7 +229,7 @@ def main_gen(params: Dict):
 def main_body():
     parser = argparse.ArgumentParser()
 
-    # configurations: read youtube_noisyspeech_synthesizer.cfg and gather inputs
+    # configurations: read youtube_fake_noisyspeech_synthesizer.cfg and gather inputs
     parser.add_argument('--cfg', default='youtube_noisyspeech_synthesizer.cfg',
                         help='Read youtube_noisyspeech_synthesizer.cfg for all the details')
     parser.add_argument('--cfg_str', type=str, default='noisy_speech')
@@ -364,11 +364,6 @@ def main_body():
     cleanfilenames = [str(path.resolve()) for path in Path(clean_dir).rglob('*.wav')]
     params['cleanfilenames'] = cleanfilenames
     params['num_cleanfiles'] = len(params['cleanfilenames'])
-
-    # transcripts = [str(path.resolve()) for path in Path(params["transcripts_dir"]).rglob('*.txt')]
-    # assert len(transcripts) == params['num_cleanfiles'], f"Number of clean files to synthesize noisy speech:" \
-    #                                                      f"{params['num_cleanfiles']}" \
-    #                                                      f"does not match number of transcripts: {len(transcripts)}."
 
     # list all noise types in a directory
     noise_dir = cfg["noise_dir"]
