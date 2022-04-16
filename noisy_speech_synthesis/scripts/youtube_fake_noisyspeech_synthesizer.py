@@ -74,8 +74,8 @@ def _audio_activity_check(filename) -> Optional[bool]:
     :return:
     """
     try:
-        y, sr = librosa.load(filename)
-        if np.max(y == 0):
+        y, sr = librosa.load(filename, sr=48000)
+        if np.max(abs(y)) == 0:
             return
         else:
             return True
@@ -193,7 +193,6 @@ def main_gen(params: Dict):
         # check that all sampled files are not empty
         for i, idx in enumerate(indices_to_use):
             idx = int(idx)
-            print(idx)
             if _audio_activity_check(clean_file_names[idx]):
                 pass
             else:
