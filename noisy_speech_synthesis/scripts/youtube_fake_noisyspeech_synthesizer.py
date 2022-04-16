@@ -192,7 +192,8 @@ def main_gen(params: Dict):
 
         # check that all sampled files are not empty
         for i, idx in enumerate(indices_to_use):
-            print(clean_file_names[idx])
+            idx = int(idx)
+            print(idx)
             if _audio_activity_check(clean_file_names[idx]):
                 pass
             else:
