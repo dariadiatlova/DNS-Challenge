@@ -229,7 +229,7 @@ def main_gen(params: Dict):
 def main_body():
     parser = argparse.ArgumentParser()
 
-    # configurations: read youtube_fake_noisyspeech_synthesizer.cfg and gather inputs
+    # configurations: read youtube_noisyspeech_synthesizer.cfg and gather inputs
     parser.add_argument('--cfg', default='youtube_noisyspeech_synthesizer.cfg',
                         help='Read youtube_noisyspeech_synthesizer.cfg for all the details')
     parser.add_argument('--cfg_str', type=str, default='noisy_speech')
