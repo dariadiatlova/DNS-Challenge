@@ -207,6 +207,7 @@ def main_gen(params: Dict):
         rmsnoisy = (clean_audio ** 2).mean() ** 0.5
         scalarnoisy = 10 ** (noisy_rms_level / 20) / (rmsnoisy + np.finfo(float).eps)
         clean_audio = clean_audio * scalarnoisy
+        clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
 
         _write_txt(new_txt, params["transcripts_destination"] + f"/t_fake_noisy{j}.txt")
 
