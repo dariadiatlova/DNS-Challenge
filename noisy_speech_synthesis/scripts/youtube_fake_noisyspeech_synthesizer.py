@@ -302,11 +302,6 @@ def main_body():
     params['target_level_lower'] = int(cfg['target_level_lower'])
     params['target_level_upper'] = int(cfg['target_level_upper'])
 
-    params['noisyspeech_dir'] = utils.get_dir(cfg, 'noisy_destination', 'noised_wav')
-    params['clean_proc_dir'] = utils.get_dir(cfg, 'clean_destination', 'clean_wav')
-    params['noise_proc_dir'] = utils.get_dir(cfg, 'noise_destination', 'noise')
-    params['new_transcripts_dir'] = utils.get_dir(cfg, 'transcripts_destination', 'new_transcripts')
-
     clean_dir = cfg['speech_dir']
     cleanfilenames = [str(path.resolve()) for path in Path(clean_dir).rglob('*.wav')]
     np.random.shuffle(cleanfilenames)
@@ -314,6 +309,7 @@ def main_body():
     params['num_cleanfiles'] = len(params['cleanfilenames'])
 
     # call main_gen() to generate audio
+    print("Start generating!")
     main_gen(params)
 
 
