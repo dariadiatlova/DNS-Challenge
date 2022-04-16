@@ -22,7 +22,7 @@ np.random.seed(5)
 random.seed(5)
 
 
-def get_file_names(tsv_filepath: str, root_path: str):
+def get_file_names(tsv_filepath: str, root_path: str) -> np.ndarray:
     """
     Function takes the path the tsv file and returns the column with filenames, changed from .mp3 to .wav.
     :param tsv_filepath: str
@@ -208,6 +208,7 @@ def main_gen(params: Dict):
         samples_rir_ch = _get_reverb(params)
         clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
 
+        # normalize amplitudes
         clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
         clean_audio = normalize(clean_audio)
         noisy_rms_level = np.random.randint(params['target_level_lower'], params['target_level_upper'])
@@ -297,6 +298,7 @@ def main_body():
     print(f"Number of files to be synthesized: {params['num_files']}")
 
     cleanfilenames = get_file_names(cfg["csv_path"], cfg["root_path"])
+    np.random.shuffle(cleanfilenames)
     params['cleanfilenames'] = cleanfilenames
     params['num_cleanfiles'] = len(params['cleanfilenames'])
 
