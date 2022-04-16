@@ -13,7 +13,7 @@ from scipy import signal
 from scipy.io import wavfile
 from tqdm import trange
 
-from audiolib import audioread, audiowrite, segmental_snr_mixer
+from audiolib import audioread, audiowrite, segmental_snr_mixer, normalize
 
 MAXTRIES = 50
 MAXFILELEN = 100
@@ -202,11 +202,13 @@ def main_gen(params: Dict):
                         break
 
         clean_audio, new_txt = gen_new_audio(np.array(clean_file_names)[indices_to_use], params, df)
+        clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
+        clean_audio = normalize(clean_audio)
         _write_txt(new_txt, params["transcripts_destination"] + f"/t_fake_noisy{j}.txt")
 
         # add reverberation to clean generated audio and writes in to file
         samples_rir_ch = _get_reverb(params)
-        # clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
+        clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
 
         audiowrite(params["clean_destination"] + f"/{j}_clean.wav", clean_audio)
         audiowrite(params["fake_noisy_destination"] + f"/{j}_fake_noisy.wav", clean_audio)
