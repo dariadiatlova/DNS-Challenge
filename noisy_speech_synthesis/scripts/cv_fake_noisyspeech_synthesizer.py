@@ -144,7 +144,7 @@ def gen_new_audio(filenames: List[str], params: Dict, df : pd.DataFrame):
         # add new audio-file till the target length will be reached
         if remaining_audio_length > 0:
             input_audio, fs_input = audioread(audiopath)
-
+            print(fs_input, fs_output)
             if fs_input != fs_output:
                 input_audio = librosa.resample(input_audio, fs_input, fs_output)
 
