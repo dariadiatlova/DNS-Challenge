@@ -46,7 +46,6 @@ def _audio_activity_check(filename) -> Optional[bool]:
     :return:
     """
     try:
-        print(filename)
         y, sr = librosa.load(filename, sr=48000)
         if np.max(abs(y)) == 0:
             return
@@ -204,6 +203,11 @@ def main_gen(params: Dict):
         clean_audio, new_txt = gen_new_audio(np.array(clean_file_names)[indices_to_use], params, df)
         clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
         clean_audio = normalize(clean_audio)
+        noisy_rms_level = np.random.randint(params['target_level_lower'], params['target_level_upper'])
+        rmsnoisy = (clean_audio ** 2).mean() ** 0.5
+        scalarnoisy = 10 ** (noisy_rms_level / 20) / (rmsnoisy + np.finfo(float).eps)
+        clean_audio = clean_audio * scalarnoisy
+
         _write_txt(new_txt, params["transcripts_destination"] + f"/t_fake_noisy{j}.txt")
 
         # add reverberation to clean generated audio and writes in to file
@@ -293,6 +297,9 @@ def main_body():
     cleanfilenames = get_file_names(cfg["csv_path"], cfg["root_path"])
     params['cleanfilenames'] = cleanfilenames
     params['num_cleanfiles'] = len(params['cleanfilenames'])
+
+    params['target_level_lower'] = int(cfg['target_level_lower'])
+    params['target_level_upper'] = int(cfg['target_level_upper'])
 
     main_gen(params)
 
