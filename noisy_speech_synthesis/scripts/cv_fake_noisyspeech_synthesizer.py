@@ -46,7 +46,7 @@ def _audio_activity_check(filename) -> Optional[bool]:
     :return:
     """
     try:
-        y, sr = librosa.load(filename, 48000)
+        y, sr = librosa.load(filename, sr=48000)
         if np.max(abs(y)) == 0:
             return
         else:
