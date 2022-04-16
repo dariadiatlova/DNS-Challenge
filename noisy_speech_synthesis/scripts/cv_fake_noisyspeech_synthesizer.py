@@ -195,7 +195,7 @@ def main_gen(params: Dict):
                 pass
             else:
                 while True:
-                    idx = random.choice(file_indices)
+                    idx = np.random.choice(file_indices, size=1, replace=True)
                     if _audio_activity_check(clean_file_names[idx]):
                         indices_to_use[i] = idx
                         break
