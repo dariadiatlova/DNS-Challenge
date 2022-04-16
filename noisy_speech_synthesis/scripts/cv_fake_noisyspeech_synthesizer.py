@@ -187,7 +187,7 @@ def main_gen(params: Dict):
 
     for j in trange(files_to_generate):
         # each time use 6 audio files to generate audio as 1 audio ~ 1 sec len
-        indices_to_use = random.choices(file_indices, k=6)
+        indices_to_use = np.random.choice(file_indices, size=6, replace=True)
 
         # check that all sampled files are not empty
         for i, idx in enumerate(indices_to_use):
