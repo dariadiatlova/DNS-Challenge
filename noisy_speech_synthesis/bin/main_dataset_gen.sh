@@ -1,5 +1,5 @@
 cd /home/dadyatlova_1/dataset/main
-mkdir data_120_hours
+mkdir -p data_100_hours
 
 source_txt1_directory="youtube/txt"
 source_txt2_directory="youtube/fake_txt"
