@@ -4,10 +4,16 @@
 # - val_rate: percent of files to use for validation
 # - test_rate: percent of files to use for test
 
-# - source_directory: directory with noisy files used for division
-# - train_directory: directory with noisy wav files to use for train
-# - val_directory: directory with noisy wav files to use for validation
-# - test_directory: directory with noisy wav files to use for testing
+# - noisy_source_directory: directory with noisy files used for division
+# - clean_source_directory: directory with clean files used for division
+
+# - train_noisy_directory: directory with noisy wav files to use for train
+# - val_noisy_directory: directory with noisy wav files to use for validation
+# - test_noisy_directory: directory with noisy wav files to use for testing
+
+# - train_clean_directory: directory with clean wav files to use for train
+# - val_clean_directory: directory with clean wav files to use for validation
+# - test_clean_directory: directory with clean wav files to use for testing
 
 train_rate=70
 val_rate=10
@@ -32,10 +38,11 @@ VAL_RATE=$((TEN_PERCENT * val_rate + TRAIN_RATE))
 TEST_RATE=$((TEN_PERCENT * test_rate + TRAIN_RATE + VAL_RATE))
 
 declare -a LIST=($(ls $noisy_source_directory))
-COUNTER=0
+LIST=( $(shuf -e "${LIST[@]}") )
 
 mkdir -p $train_noisy_directory $val_noisy_directory $test_noisy_directory $train_clean_directory $val_clean_directory $test_clean_directory
 
+COUNTER=0
 for i in ${LIST[@]}; do
   base_name=$(basename ${i})
   noisy_path="${noisy_source_directory}/${base_name}"
