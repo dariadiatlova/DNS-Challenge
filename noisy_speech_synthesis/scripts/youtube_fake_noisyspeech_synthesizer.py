@@ -203,7 +203,7 @@ def main_gen(params: Dict):
                         break
 
         clean_audio, new_txt = gen_new_audio(np.array(clean_file_names)[indices_to_use], params)
-        _write_txt(new_txt, params["transcripts_destination"] + f"/t{j}.txt")
+        _write_txt(new_txt, params["transcripts_destination"] + f"/YouTube_{j}_clean.txt")
         # add reverberation to clean generated audio and writes in to file
         samples_rir_ch = _get_reverb(params)
         clean_audio = add_pyreverb(clean_audio, samples_rir_ch)
@@ -217,8 +217,8 @@ def main_gen(params: Dict):
         clean_audio = clean_audio * scalarnoisy
         clean_audio = clean_audio / (max(abs(clean_audio)) + np.finfo(float).eps)
 
-        audiowrite(params["clean_destination"] + f"/{j}_clean.wav", clean_audio)
-        audiowrite(params["noisy_destination"] + f"/{j}_fake_noisy.wav", clean_audio)
+        audiowrite(params["clean_destination"] + f"/YouTube_{j}_clean.wav", clean_audio)
+        audiowrite(params["noisy_destination"] + f"/YouTube_{j}_clean.wav", clean_audio)
     return
 
 

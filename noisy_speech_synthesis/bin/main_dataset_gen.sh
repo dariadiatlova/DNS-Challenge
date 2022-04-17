@@ -18,7 +18,7 @@ source_noisy4_directory="common_voice/fake_noised_wav"
 
 target_txt_directory="data_120_hours/txt"
 target_clean_directory="data_120_hours/clean_wav"
-target_noisy_directory="data_120_hours/noised_wav"
+target_noisy_directory="data_120_hours/noisy_wav"
 
 mkdir -p $target_txt_directory $target_clean_directory $target_noisy_directory
 
