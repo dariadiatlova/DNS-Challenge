@@ -19,16 +19,16 @@ train_rate=70
 val_rate=10
 test_rate=20
 
-noisy_source_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_wav"
-clean_source_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_wav"
+noisy_source_directory="/home/dadyatlova_1/dataset/main/data_100_hours/noisy_wav"
+clean_source_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_wav"
 
-train_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_train"
-val_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_val"
+train_noisy_directory="/home/dadyatlova_1/dataset/main/data_100_hours/noisy_train"
+val_noisy_directory="/home/dadyatlova_1/dataset/main/data_100_hours/noisy_val"
 test_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_test"
 
-train_clean_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_train"
-val_clean_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_val"
-test_clean_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_test"
+train_clean_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_train"
+val_clean_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_val"
+test_clean_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_test"
 
 N=$(ls $noisy_source_directory | wc -l)
 
