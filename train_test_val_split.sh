@@ -13,39 +13,43 @@ train_rate=70
 val_rate=10
 test_rate=20
 
-source_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy"
-<<<<<<< HEAD
-train_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/train"
-val_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/val"
-test_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/test"
-=======
-train_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy_train"
-val_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy_val"
-test_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h/noisy_test"
->>>>>>> 75be29d3987da1299aa08265c3cf45971dabc19c
+noisy_source_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_wav"
+clean_source_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_wav"
 
-N=$(ls $source_directory | wc -l)
+train_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_train"
+val_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_val"
+test_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_test"
+
+train_clean_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_train"
+val_clean_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_val"
+test_clean_directory="/home/dadyatlova_1/dataset/main/data_120_hours/clean_test"
+
+N=$(ls $noisy_source_directory | wc -l)
 
 TEN_PERCENT=$((N / 100))
 TRAIN_RATE=$((TEN_PERCENT * train_rate))
 VAL_RATE=$((TEN_PERCENT * val_rate + TRAIN_RATE))
 TEST_RATE=$((TEN_PERCENT * test_rate + TRAIN_RATE + VAL_RATE))
 
-declare -a LIST=($(ls $source_directory))
+declare -a LIST=($(ls $noisy_source_directory))
 COUNTER=0
 
-mkdir $train_directory
-mkdir $val_directory
-mkdir $test_directory
+mkdir -p $train_noisy_directory $val_noisy_directory $test_noisy_directory $train_clean_directory $val_clean_directory $test_clean_directory
 
 for i in ${LIST[@]}; do
-  n=${i##*_}
-  path="${source_directory}/${i}"
-  if (($COUNTER < $TRAIN_RATE)); then cp $path "$train_directory/noisy_$n";
-  elif (($COUNTER < $VAL_RATE)); then cp $path "$val_directory/noisy_$n";
-  else cp $path "$test_directory/noisy_$n"
+  base_name=$(basename ${i})
+  noisy_path="${noisy_source_directory}/${base_name}"
+  clean_path="${clean_source_directory}/${base_name}"
+
+  if (($COUNTER < $TRAIN_RATE)); then
+    cp $noisy_path "$train_noisy_directory/$base_name" && cp $clean_path "$train_clean_directory/$base_name";
+  elif (($COUNTER < $VAL_RATE)); then
+    cp $noisy_path "$val_noisy_directory/$base_name" && cp $clean_path "$val_clean_directory/$base_name";
+  else
+    cp $noisy_path "$test_noisy_directory/$base_name" && cp $clean_path "$test_clean_directory/$base_name"
   fi
   ((COUNTER++))
+
 done
 
 echo "Files were moved successfully"
