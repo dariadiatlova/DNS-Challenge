@@ -24,7 +24,7 @@ clean_source_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_wav
 
 train_noisy_directory="/home/dadyatlova_1/dataset/main/data_100_hours/noisy_train"
 val_noisy_directory="/home/dadyatlova_1/dataset/main/data_100_hours/noisy_val"
-test_noisy_directory="/home/dadyatlova_1/dataset/main/data_120_hours/noisy_test"
+test_noisy_directory="/home/dadyatlova_1/dataset/main/data_100_hours/noisy_test"
 
 train_clean_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_train"
 val_clean_directory="/home/dadyatlova_1/dataset/main/data_100_hours/clean_val"
