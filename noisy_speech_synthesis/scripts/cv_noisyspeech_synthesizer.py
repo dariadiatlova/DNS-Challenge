@@ -203,7 +203,6 @@ def main_gen(params: Dict):
                         break
 
         clean_audio, new_txt = gen_new_audio(np.array(clean_file_names)[indices_to_use], params, df)
-        _write_txt(new_txt, params["transcripts_destination"] + f"/t{j}.txt")
 
         # add reverberation to clean generated audio and writes in to file
         samples_rir_ch = _get_reverb(params)
@@ -218,15 +217,12 @@ def main_gen(params: Dict):
             snr = np.random.randint(params['snr_lower'], params['snr_upper'])
         noise_audio, folder_name = get_noise_audiofile(params)
 
-        if folder_name == "TCAR":
-            # amplitude for this type of noise is much lower, so we make snr lower
-            snr -= 20
-
         clean_audio, noise_audio, noisy_audio, target_level = segmental_snr_mixer(
             params=params, clean=clean_audio, noise=noise_audio, snr=snr)
         audiowrite(params["noise_destination"] + f"/n_{folder_name}_{j}.wav", noise_audio)
         audiowrite(params["clean_destination"] + f"/{j}_{folder_name}_snr_{snr}.wav", clean_audio)
         audiowrite(params["noisy_destination"] + f"/{j}_{folder_name}_snr_{snr}.wav", noisy_audio)
+        _write_txt(new_txt, params["transcripts_destination"] + f"/{j}_{folder_name}_snr_{snr}.txt")
     return
 
 
