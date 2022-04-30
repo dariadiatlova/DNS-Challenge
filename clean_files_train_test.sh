@@ -1,8 +1,9 @@
-source_directory="/home/dadyatlova_1/russian_speech_denoiser/DNS-Challenge/datasets/training_set_jan14_min35_10_40h"
+source_clean_directory="/home/dadyatlova_1/dataset/main/common_voice/no_reverb_clean_wav"
+source_directory="/home/dadyatlova_1/dataset/main/no_reverb_50h"
 
-TRAIN_DIR="$source_directory/noisy_train"
-VAL_DIR="$source_directory/noisy_val"
-TEST_DIR="$source_directory/noisy_test"
+TRAIN_DIR="$source_directory/train_noisy"
+VAL_DIR="$source_directory/val_noisy"
+TEST_DIR="$source_directory/test_noisy"
 
 declare -a TRAIN_ARRAY=($(ls $TRAIN_DIR))
 read -d'\n' TRAIN_ARRAY < <(printf '%s\n' "${TRAIN_ARRAY[@]}"|tac)
@@ -11,23 +12,23 @@ read -d'\n' VAL_ARRAY < <(printf '%s\n' "${VAL_ARRAY[@]}"|tac)
 declare -a TEST_ARRAY=($(ls $TEST_DIR))
 read -d'\n' TEST_ARRAY < <(printf '%s\n' "${TEST_ARRAY[@]}"|tac)
 
-mkdir "$source_directory/clean_train"
-mkdir "$source_directory/clean_val"
-mkdir "$source_directory/clean_test"
+mkdir -p "$source_directory/train_clean"
+mkdir -p "$source_directory/val_clean"
+mkdir -p "$source_directory/test_clean"
 
 for name in ${TRAIN_ARRAY[@]}; do
   i=${name##*_}
-  cp "${source_directory}/clean/clean_fileid_${i}" "$source_directory/clean_train"
+  cp "${source_clean_directory}/${i}" "$source_directory/train_clean"
 done
 
 for name in ${VAL_ARRAY[@]}; do
   i=${name##*_}
-  cp "${source_directory}/clean/clean_fileid_${i}" "$source_directory/clean_val"
+  cp "${source_clean_directory}/${i}" "$source_directory/val_clean"
 done
 
 for name in ${TEST_ARRAY[@]}; do
   i=${name##*_}
-  cp "${source_directory}/clean/clean_fileid_${i}" "$source_directory/clean_test"
+  cp "${source_clean_directory}/${i}" "$source_directory/test_clean"
 done
 
 echo "Files were copied successfully"
