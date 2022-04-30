@@ -17,18 +17,15 @@ mkdir -p "$source_directory/val_clean"
 mkdir -p "$source_directory/test_clean"
 
 for name in ${TRAIN_ARRAY[@]}; do
-  i=${name##*_}
-  cp "${source_clean_directory}/${i}" "$source_directory/train_clean"
+  cp "${source_clean_directory}/${name}" "$source_directory/train_clean"
 done
 
 for name in ${VAL_ARRAY[@]}; do
-  i=${name##*_}
-  cp "${source_clean_directory}/${i}" "$source_directory/val_clean"
+  cp "${source_clean_directory}/${name}" "$source_directory/val_clean"
 done
 
 for name in ${TEST_ARRAY[@]}; do
-  i=${name##*_}
-  cp "${source_clean_directory}/${i}" "$source_directory/test_clean"
+  cp "${source_clean_directory}/${name}" "$source_directory/test_clean"
 done
 
 echo "Files were copied successfully"
